@@ -64,7 +64,7 @@ Prompt:
 >    - Product-level constraints that affect technical decisions
 >    - Operational workflows: how changes are deployed, tested, or applied (e.g., what CI/CD tools are used, what order things must happen in)
 >
-> 3. **Preserve specificity**: When reviewers mention specific tool names, commands, or processes (e.g., "run terrateam apply", "use bazel test"), preserve those details verbatim in the learning. These reveal operational knowledge about how the team works. Do not abstract them into generic descriptions.
+> 3. **Preserve specificity**: When reviewers mention specific tool names, commands, or processes (e.g., "run terrateam apply", "use bazel test"), preserve those details verbatim in the learning. These reveal operational knowledge about how the team works. Do not abstract them into generic descriptions. If the operation is a deployment, infrastructure change, or other high-impact action (e.g., `terrateam apply`, `gcloud`, `mix deploy`), explicitly note in the learning that it is a human-only operation that AI agents should not perform.
 >
 > 4. **Ignore** all of the following:
 >    - Style nitpicks and formatting suggestions
@@ -72,6 +72,7 @@ Prompt:
 >    - Bot comments (dependabot, renovate, CI bots, etc.)
 >    - Comments that merely describe what the code does (obvious from reading it)
 >    - Generic advice without specific insight ("add more tests", "consider error handling")
+>    - Documentation or commenting conventions (e.g., "add a comment explaining X", "document imports with this format") — these are stylistic, not architectural
 >
 > 5. For each learning found, return it in this exact format:
 >
@@ -117,15 +118,18 @@ Prompt:
 >    - Not obvious from browsing the code
 >    - Not already documented
 >    - Would save a future developer from making a mistake or wrong assumption
+>    - Is about architecture, behavior, or workflow — NOT about code comments, documentation formatting, or naming conventions
 >
-> 4. Focus areas:
+> 4. **Right level of abstraction**: Always generalize learnings to the broadest scope where they still hold true. If a diff shows a pattern with a specific technology but the principle applies more broadly, state the learning in general terms. For example, if a diff replaces `dataset_id = "feature_flags"` with `dataset_id = google_bigquery_dataset.feature_flags.dataset_id`, the learning is NOT "use resource references for BigQuery datasets" — it IS "always use Terraform resource references instead of hardcoded ID strings to ensure proper dependency tracking." Only keep a learning technology-specific if the insight is genuinely unique to that technology.
+>
+> 5. Focus areas:
 >    - Architectural conventions that aren't enforced by tooling
 >    - Implicit contracts between modules (e.g., "service A must be initialized before service B")
 >    - Product-level behavior patterns that affect how code should be written
 >    - Non-obvious dependency relationships
 >    - Surprising behavior or gotchas discovered through the changes
 >
-> 5. For each pattern found, return it in this exact format:
+> 6. For each pattern found, return it in this exact format:
 >
 > ```
 > LEARNING:
