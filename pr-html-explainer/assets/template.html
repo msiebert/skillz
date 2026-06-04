@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- INSERT: <title>PR #<N> — <title></title> -->
+<title>PR Explainer</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<!-- INSERT: data-pr-key="<pr-number>" data-repo="<owner/repo>" data-sha="<head-sha>" -->
+<body data-pr-key="default">
+
+<header class="hero">
+  <div class="hero-inner">
+    <!-- INSERT: hero block -->
+    <div class="pr-badge">PR #<!--N--> · <!--owner/repo--></div>
+    <h1><!--title--><br/><span class="subtle"><!--subtitle--></span></h1>
+    <p class="lede"><!-- 2–4 sentence elevator pitch --></p>
+    <div class="meta">
+      <span><strong>Author:</strong> <!--author--></span>
+      <span><strong>Branch:</strong> <!--head--> → <!--base--></span>
+      <span><strong>Files:</strong> <!--N--> · <strong>Lines:</strong> +<!--A--> / −<!--D--></span>
+      <a class="ghlink" href="<!--PR URL-->" target="_blank" rel="noopener">View on GitHub →</a>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar">
+  <button data-tab="explainer" class="active">📖 Explainer</button>
+  <button data-tab="review">🤖 AI Review</button>
+  <button data-tab="ci">🚦 CI status</button>
+  <span class="tabbar-spacer"></span>
+  <button id="notes-toggle" class="ghost" title="Toggle notes (n)">📝 Notes <kbd class="kbd-hint">n</kbd></button>
+</nav>
+
+<main>
+
+<!-- ============ TAB: EXPLAINER ============ -->
+<div data-tab-pane="explainer" class="active">
+
+  <nav class="toc">
+    <a href="#tldr">TL;DR</a>
+    <a href="#arch">Architecture</a>
+    <a href="#flows">Deep flows</a>
+    <a href="#diffs">Before / After</a>
+    <a href="#checklist">Checklist</a>
+  </nav>
+
+  <section id="tldr">
+    <h2>TL;DR</h2>
+    <ul class="bigbullets">
+      <!-- INSERT: 5 bullets -->
+    </ul>
+  </section>
+
+  <section id="arch">
+    <h2>Architecture</h2>
+    <p>Two-paragraph orientation: what the system looked like before this PR, and the shape of the change at a high level.</p>
+
+    <h3>1. <!-- Diagram 1 title --></h3>
+    <div class="mermaid">
+<!-- INSERT: Mermaid flowchart -->
+    </div>
+
+    <h3>2. <!-- Diagram 2 title --></h3>
+    <div class="mermaid">
+<!-- INSERT: Mermaid sequenceDiagram -->
+    </div>
+  </section>
+
+  <section id="flows">
+    <h2>Deep flows</h2>
+    <p class="caption">For each major code path, 3–5 sentences of prose that walks through it step-by-step. Treat the reader like they've never seen this framework before. Each step links to the relevant file:line on GitHub.</p>
+
+    <article class="flow">
+      <h3><!-- Flow title --></h3>
+      <p><!-- Step-by-step narrative with inline GitHub links --></p>
+    </article>
+
+    <article class="flow">
+      <h3><!-- Flow 2 title --></h3>
+      <p><!-- ... --></p>
+    </article>
+  </section>
+
+  <section id="diffs">
+    <h2>Before vs. After</h2>
+    <p>Real snippets pulled from <code>git show master:&lt;path&gt;</code> on the left, current file on the right.</p>
+
+    <h3><!-- Example title --></h3>
+    <div class="diff">
+      <div class="before">
+        <h4>Before</h4>
+<pre><code><!-- code --></code></pre>
+      </div>
+      <div class="after">
+        <h4>After</h4>
+<pre><code><!-- code --></code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="checklist">
+    <h2>Reviewer's checklist</h2>
+    <ol class="checklist">
+      <li><label><input type="checkbox"/> <!-- Item --></label></li>
+    </ol>
+  </section>
+
+</div>
+
+<!-- ============ TAB: AI REVIEW ============ -->
+<div data-tab-pane="review">
+  <section id="suspicions">
+    <h2>🤖 AI review — areas worth a second look</h2>
+    <p class="caption">Findings surfaced by the adversarial review pass. Severity is the reviewer's guess. <span class="sev high">high</span> = ask before merging · <span class="sev med">med</span> = check the assumption · <span class="sev low">low</span> = note for future hardening.</p>
+
+    <ol class="findings">
+      <li>
+        <header><span class="sev high">high</span> <!-- Title --></header>
+        <a class="path" href="<!-- GH deep-link -->" target="_blank" rel="noopener"><!-- file:line --></a>
+        <p><!-- What could go wrong --></p>
+        <p><strong>Ask:</strong> <!-- The sharp question --></p>
+      </li>
+      <!-- ... more findings -->
+    </ol>
+  </section>
+</div>
+
+<!-- ============ TAB: CI STATUS ============ -->
+<div data-tab-pane="ci">
+  <section>
+    <h2>CI status</h2>
+    <p class="caption">Snapshot taken at page-generation time — refresh by re-running the skill.</p>
+    <table class="ci">
+      <thead><tr><th>Status</th><th>Check</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr><td><span class="ci-dot ok"></span></td><td><!-- name --></td><td><a href="<!-- link -->" target="_blank">view →</a></td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+
+</main>
+
+<!-- ============ NOTES PANEL ============ -->
+<aside id="notes-panel" aria-hidden="true">
+  <header>
+    <h3>Notes</h3>
+    <span id="notes-saved">saved</span>
+    <button id="notes-close" aria-label="Close notes">×</button>
+  </header>
+  <textarea id="pr-notes" placeholder="Take notes here. Auto-saved to this browser, scoped per PR number."></textarea>
+  <footer>
+    <span id="notes-count">0 chars</span>
+    <button id="notes-copy" class="ghost">Copy</button>
+    <button id="notes-clear" class="ghost">Clear</button>
+  </footer>
+</aside>
+
+<footer class="page-footer">
+  <p>Generated by the <code>pr-html-explainer</code> skill. Notes are saved in your browser only.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
