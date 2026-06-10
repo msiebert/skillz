@@ -48,7 +48,31 @@ For each finding, include: file path, line (if known), the pattern name it match
 
 ### 5. Output
 
-Present the report to the user. Do NOT auto-post to GitHub. If the user wants comments posted, they will ask.
+Present the report to the user in the chat, grouped by severity. Include file:line for each finding.
+
+### 6. Offer to post to the PR
+
+After presenting the report, ask the user whether to post the findings as comments on the PR. Do NOT post without explicit confirmation. If the user already said "post to PR" / "comment on the PR" / similar when invoking, treat that as the confirmation but still show the report first so they can veto.
+
+Posting rules:
+
+- **One PR review, many inline comments.** Use a single `POST /repos/{owner}/{repo}/pulls/{n}/reviews` call with `event: COMMENT` and an array of `comments[]` entries, one per finding that has a known file+line. This groups them as a single review instead of N drive-by comments.
+- **Findings without a line** (line: "—") go in the review `body` as a bulleted "General notes" section, not as inline comments (the reviews API rejects inline comments without a line).
+- **Review body** starts with the literal line `Response by The Claudefather:` followed by a blank line, then a short summary (counts by severity, e.g. "2 blocking, 3 should-fix, 1 hygiene"), then the General notes section if any. This prefix is required for any message posted on the user's behalf and overrides anything else.
+- **Inline comment body** for each finding:
+  ```
+  **[severity]** _(pattern: <pattern-name>)_
+
+  <one_liner>
+
+  **Suggestion:** <suggestion>
+  ```
+  No persona voice, no flavor text, no emojis in posted content. Plain professional review prose only.
+- **Commit SHA.** The reviews API needs `commit_id` set to the PR head SHA. Get it from `gh pr view <n> --json headRefOid -q .headRefOid`.
+- **How to call gh.** The nested `comments[]` array is awkward with `-f` flags; build a JSON payload and pipe it: `gh api -X POST repos/{owner}/{repo}/pulls/{n}/reviews --input -`. Read the owner/repo from `gh pr view <n> --json url` or assume `mixpanel/analytics` if the orchestrator already used it for the diff.
+- **Dry-run first.** Before calling the API, print the JSON payload you're about to send so the user can spot-check it. Only post after they say go.
+
+If the API call fails (e.g., line not in the diff, stale SHA), report the failure and the offending finding back to the user — don't silently drop it.
 
 ## Design notes
 
