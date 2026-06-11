@@ -22,7 +22,8 @@ deep (`~/.claude/skills` is a symlink to this repo's `skills/`).
 skills/dev-planning/
 ├── SKILL.md                    # orchestrator: phases, gates, plan-doc format
 └── agents/
-    └── pattern-researcher.md   # subagent prompt, dispatched verbatim + task appended
+    ├── pattern-researcher.md   # subagent prompt, dispatched verbatim + task appended
+    └── adversarial-reviewer.md # subagent prompt: attack the approved design
 ```
 
 House style follows `skills/mixpanel-review/`: the orchestrator stays lean and
@@ -30,7 +31,7 @@ dispatches subagent prompt files; it never inlines their content.
 
 ## Flow
 
-Five phases, three approval gates.
+Six phases, three approval gates.
 
 ### 1. Intake
 
@@ -74,7 +75,21 @@ Five phases, three approval gates.
   subagents** when a design question needs deeper codebase digging. Delegate the
   reading, never the deciding.
 
-### 5. Test-case interview — Gate 3 (ask first, fill gaps)
+### 5. Adversarial design review (subagent)
+
+- After Gates 1–2 pass, dispatch **one subagent** with the
+  `agents/adversarial-reviewer.md` prompt plus the task summary, research report,
+  approved architecture, and module breakdown.
+- Mandate: **attack the design.** Look for overlooked prior art (cross-checked against
+  the research report), wrong or leaky module boundaries, missing failure modes,
+  over-engineering / YAGNI violations, and mismatches with the target repo's
+  conventions. The subagent's job is to find problems, not to praise.
+- Returns findings with severity: **blocking**, **should-fix**, **note**.
+- The orchestrator triages each finding with the user: **accept** (revise the design
+  and re-confirm the affected gate) or **rebut** (reason stated). No silent drops.
+- Findings and their resolutions (including rebuttals) are recorded in the plan doc.
+
+### 6. Test-case interview — Gate 3 (ask first, fill gaps)
 
 - Runs only after architecture and modules are settled.
 - Per module, plus cross-cutting product behavior:
@@ -93,7 +108,8 @@ repo (include the Linear issue ID in the filename when present, e.g.
 convention the target repo already has.
 
 Contents: task summary (+ Linear issue link), research findings, architecture, module
-breakdown, test-case list (with origin tags), open questions.
+breakdown, adversarial review findings and resolutions, test-case list (with origin
+tags), open questions.
 
 Then the skill **stops**. Implementation is explicitly out of scope, stated in the
 doc's footer.
@@ -102,6 +118,8 @@ doc's footer.
 
 - **Research subagent fails or times out** → say so; offer to retry or proceed with a
   "no research" annotation in the plan doc.
+- **Adversarial reviewer fails or times out** → say so; offer to retry or proceed with
+  a "no adversarial review" annotation in the plan doc.
 - **User abandons mid-interview** → the plan doc is still written, with an "interview
   incomplete" marker on the unexamined modules.
 - **No Linear issue exists** → proceed; plan doc notes "no tracking issue."
