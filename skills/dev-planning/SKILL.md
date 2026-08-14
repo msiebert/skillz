@@ -1,6 +1,6 @@
 ---
 name: dev-planning
-description: Use when the user wants to plan a feature, change, or refactor before writing code — "let's plan X", "help me design this change", "sketch a plan I can hand off" — or when starting any non-trivial dev task that has no written plan yet. First of the dev-* workflow skills.
+description: Use BEFORE writing implementation code for any non-trivial feature, change, refactor, or bugfix — proactively, even when the user never says the word "plan" and even if the change first looks small or like a one-liner. Explicit triggers: "let's plan X", "help me design/scope this", "how should we build/approach X", "sketch a plan I can hand off". Also fires implicitly at the start of any dev task that has no written plan yet. When in doubt on a non-trivial task, invoke this FIRST instead of jumping to code. First of the dev-* workflow skills.
 ---
 
 # Dev Planning
@@ -85,10 +85,10 @@ unexamined modules "interview incomplete".
 
 ## Red Flags — you are about to violate this skill
 
-| Rationalization | Reality |
-|---|---|
-| "User is in a hurry, skip the questions" | Gates still apply. Ask fewer, sharper questions — never zero. |
+| Rationalization                                      | Reality                                                                   |
+| ---------------------------------------------------- | ------------------------------------------------------------------------- |
+| "User is in a hurry, skip the questions"             | Gates still apply. Ask fewer, sharper questions — never zero.             |
 | "I'll flag open questions with recommended defaults" | Gate approvals and test cases need the user's answers, not your defaults. |
-| "I already know this codebase" | Dispatch the researcher anyway. Its report belongs in the plan doc. |
-| "The testing section is obvious" | Test cases come FROM the interview. Never write them unilaterally. |
-| "The plan's done, might as well start implementing" | The skill ends at the plan doc. Stop. |
+| "I already know this codebase"                       | Dispatch the researcher anyway. Its report belongs in the plan doc.       |
+| "The testing section is obvious"                     | Test cases come FROM the interview. Never write them unilaterally.        |
+| "The plan's done, might as well start implementing"  | The skill ends at the plan doc. Stop.                                     |
