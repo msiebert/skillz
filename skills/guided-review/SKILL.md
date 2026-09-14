@@ -5,7 +5,7 @@ description: Walk the reviewer through a PR at the systems-design level, one ste
 
 # Guided Review
 
-A stepwise walkthrough that gets the reviewer holding the *system* in their head instead of drowning in the diff. Line-level correctness is already covered by other tooling (`self-review`, `mixpanel-review`, bots) — this skill deliberately does not hunt bugs. It compresses, routes, and surfaces design decisions, then captures the reviewer's judgment.
+A stepwise walkthrough that gets the reviewer holding the _system_ in their head instead of drowning in the diff. Line-level correctness is already covered by other tooling (`self-review`, `mixpanel-review`, bots) — this skill deliberately does not hunt bugs. It compresses, routes, and surfaces design decisions, then captures the reviewer's judgment.
 
 **The output is the reviewer's opinion, not the model's.** Steps end with a checkpoint; the reviewer's reactions accumulate into a flag list, and the final step posts that flag list as inline comments on the PR. The model's own opinions are quarantined in the smells and hygiene steps and only promoted if the reviewer says so.
 
@@ -32,15 +32,15 @@ If no PR exists, fall back to `git diff --stat <base>...HEAD` (default base `mas
 
 From paths and line counts alone — **no file contents yet** — bucket every changed file into an architectural role:
 
-| Role | Typical path/name signals |
-| --- | --- |
+| Role                  | Typical path/name signals                                                                                                                 |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | **External contract** | `*.proto`, `*.graphql`, `openapi*`, `schema*`, `migrations/`, `routes`, `urls`, `api/`, `__init__` re-exports, published SDK entry points |
-| **Entry point** | handlers, views, controllers, endpoints, CLI commands, consumers, cron/task definitions |
-| **Domain logic** | services, managers, domain/core modules, business rules |
-| **Persistence** | models, repositories, DAOs, query builders, cache layers |
-| **Infra / config** | CI workflows, Dockerfiles, terraform, settings, feature flags, dependency manifests |
-| **Tests** | test/spec files, fixtures, factories |
-| **Mechanical** | generated code, lockfiles, vendored, formatting-only, pure renames |
+| **Entry point**       | handlers, views, controllers, endpoints, CLI commands, consumers, cron/task definitions                                                   |
+| **Domain logic**      | services, managers, domain/core modules, business rules                                                                                   |
+| **Persistence**       | models, repositories, DAOs, query builders, cache layers                                                                                  |
+| **Infra / config**    | CI workflows, Dockerfiles, terraform, settings, feature flags, dependency manifests                                                       |
+| **Tests**             | test/spec files, fixtures, factories                                                                                                      |
+| **Mechanical**        | generated code, lockfiles, vendored, formatting-only, pure renames                                                                        |
 
 Then tag each non-test file **new** / **extended** / **reshaped**:
 
@@ -54,11 +54,11 @@ Then tag each non-test file **new** / **extended** / **reshaped**:
 
 Pick the strategy from the classification before dispatching anything:
 
-| Size | Strategy |
-| --- | --- |
-| < ~10 non-mechanical files **and** < ~400 changed lines | **No fan-out.** Do all lenses inline. Latency matters more than parallelism at this size. |
-| ~10–60 files | **Full fan-out.** |
-| > ~60 files or > ~3k changed lines | Fan out, but say up front that the map will be lossy, and offer to scope to one subsystem instead of pretending to cover everything. Let the user choose before proceeding. |
+| Size                                                    | Strategy                                                                                                                                                                    |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| < ~10 non-mechanical files **and** < ~400 changed lines | **No fan-out.** Do all lenses inline. Latency matters more than parallelism at this size.                                                                                   |
+| ~10–60 files                                            | **Full fan-out.**                                                                                                                                                           |
+| > ~60 files or > ~3k changed lines                      | Fan out, but say up front that the map will be lossy, and offer to scope to one subsystem instead of pretending to cover everything. Let the user choose before proceeding. |
 
 Mechanical files never count toward the ladder and never enter the walkthrough — they go straight to the skip list.
 
@@ -69,7 +69,7 @@ Mechanical files never count toward the ladder and never enter the walkthrough �
 Send all subagents in a single message so they run concurrently. **Do not dispatch lazily per step** — stepwise pacing is for the reviewer's reading, not the model's execution.
 
 - `agents/contract-boundary.md` — contracts changed and their compatibility verdict. The only lens that must search outside the PR.
-- `agents/core-logic.md` — the `reshaped` files; extracts decisions with *real* alternatives, not descriptions.
+- `agents/core-logic.md` — the `reshaped` files; extracts decisions with _real_ alternatives, not descriptions.
 - `agents/test-inventory.md` — test files only; semantic assertions per component.
 - `agents/comment-hygiene.md` — scans changed files for stale/historical comments and repo-pattern deviations.
 
@@ -87,7 +87,7 @@ Present **one step at a time**. Stop after each and wait. Never pre-emptively du
 
 Every step header carries its number and the total, so the reviewer knows where they are: `**Step 3 of 7 — Contracts**`.
 
-### Step 0 — Orient *(no checkpoint; fold into the Step 1 message)*
+### Step 0 — Orient _(no checkpoint; fold into the Step 1 message)_
 
 One or two lines: PR number and title, N components touched, N files (N mechanical/skipped), N contract changes, size verdict.
 
@@ -97,17 +97,17 @@ One or two lines: PR number and title, N components touched, N files (N mechanic
 - **What it claims to do** — the author's stated scope.
 - **The architecture in one sentence** — the shape of the change.
 
-→ **Opening move (first arrival only):** name **two or three specific threads** worth digging into, drawn from reshaped files, contract-boundary findings, or anything that looks like a live design choice. Present them as an invitation — e.g. *"Worth digging into: the retry logic in the consumer, the new cache-invalidation path, or the schema migration. Where do you want to start?"* Let the reviewer explore conversationally. When a thread winds down, offer another two or three from what's left, if any remain.
+→ **Opening move (first arrival only):** name **two or three specific threads** worth digging into, drawn from reshaped files, contract-boundary findings, or anything that looks like a live design choice. Present them as an invitation — e.g. _"Worth digging into: the retry logic in the consumer, the new cache-invalidation path, or the schema migration. Where do you want to start?"_ Let the reviewer explore conversationally. When a thread winds down, offer another two or three from what's left, if any remain.
 
-**After a few exchanges**, shift from suggesting new threads to checking readiness: *"Feel oriented enough to move on, or is there more here?"*
+**After a few exchanges**, shift from suggesting new threads to checking readiness: _"Feel oriented enough to move on, or is there more here?"_
 
 This step is a genuine back-and-forth, not a single presentation-and-checkpoint — spend as many turns here as the reviewer wants.
 
 ### Step 2 — Map & route
 
-**Component map** — the goal is that the reviewer can hold the *system* in their head: what each moving part **is**, and **how the parts talk to each other**. Interaction is the point, not enumeration. Two ingredients, in this order:
+**Component map** — the goal is that the reviewer can hold the _system_ in their head: what each moving part **is**, and **how the parts talk to each other**. Interaction is the point, not enumeration. Two ingredients, in this order:
 
-1. **Lead with the interaction.** Trace one representative path through the change end to end. Show it as a diagram (ASCII flow or mermaid graph) whenever more than ~three components interact. The reviewer should be able to reconstruct the flow of control from the diagram alone.
+1. **Lead with the interaction.** Trace one representative path through the change end to end. Show it as a plain ASCII/text diagram whenever more than ~three components interact — never mermaid or any other diagram format that isn't renderable as plain text in a terminal (the review runs in a terminal that renders GitHub-flavored markdown but not mermaid). The reviewer should be able to reconstruct the flow of control from the diagram alone.
 
 2. **Then name and explain each component.** Use a **grounded, real name** for each — its class, module, or role name, drawn from the code itself. **Never use invented behavior-based nicknames** (no "the Gate," no "the Counter"). For each: two or three sentences, dense and direct — the register a fellow engineer would use describing it at a whiteboard, not padded prose. Cover its single responsibility, its failure posture, and what it hands off to its neighbors. Close the map with one sentence on the system's overall shape.
 
@@ -119,7 +119,7 @@ This step is a genuine back-and-forth, not a single presentation-and-checkpoint 
 
 **Verify the skip list before presenting it.** For every skipped non-mechanical file, cross-check it against the contract-boundary agent's findings, and `Read` its hunks if it touches something the contract agent flagged, changes a signature or public export, adds a conditional or error path, or changes a default/constant. Anything that survives that check moves off the skip list and into the route.
 
-→ **Checkpoint:** *Anything on the skip list you want pulled back in?*
+→ **Checkpoint:** _Anything on the skip list you want pulled back in?_
 
 ### Step 3 — Contracts
 
@@ -129,7 +129,7 @@ From the contract-boundary agent, kept **conceptual** — not file- or line-leve
 
 That's it. Callers outside the diff, fine-grained coupling, and dependency-direction detail are **dropped** — they either overlap the Step 2 map or drop to a granularity the reviewer doesn't want here.
 
-→ **Checkpoint:** *Does this match your model of what's changing at the boundary?*
+→ **Checkpoint:** _Does this match your model of what's changing at the boundary?_
 
 Record anything the reviewer objects to, doubts, or wants raised as a **flag**.
 
@@ -147,7 +147,7 @@ From the core-logic agent. Only surface a card when there's **genuine live tensi
 
 **Zero or one card is a fine, expected outcome.** Do not pad to reach three. If the agent's candidates are all descriptions dressed as decisions, or alternatives no one would seriously consider, drop them.
 
-→ **Checkpoint:** *Any of these worth pushing on?*
+→ **Checkpoint:** _Any of these worth pushing on?_
 
 Every one the reviewer names becomes a flag, using the card's `Question` as the seed.
 
@@ -155,7 +155,7 @@ Every one the reviewer names becomes a flag, using the card's `Question` as the 
 
 This step is an interview, not a report. **Do not show the test inventory up front.**
 
-Component by component: ask the reviewer what they'd expect to be tested for that component, *before* revealing anything. Silently compare their answer against the actual test-inventory agent output.
+Component by component: ask the reviewer what they'd expect to be tested for that component, _before_ revealing anything. Silently compare their answer against the actual test-inventory agent output.
 
 **Only surface the gaps the reviewer didn't mention** — behavior with no test that would catch a regression, which the reviewer didn't think to ask about. Do not show confirmation of things they did name; the value here is the blind spot, not the checklist.
 
@@ -164,11 +164,12 @@ Component by component: ask the reviewer what they'd expect to be tested for tha
 ### Step 6 — Smells
 
 The model's own read, two or three items maximum, explicitly fenced and labeled as such:
-> *Model's read, not yours — promote any of these to the question list if you agree.*
+
+> _Model's read, not yours — promote any of these to the question list if you agree._
 
 Design-level only: a misplaced responsibility, an abstraction that will leak, a pattern deviation without visible justification. No line-level bugs, no style, no naming nits. If nothing rises to that bar, say "nothing at the design level" and move on.
 
-→ **Checkpoint:** *Promote any of these?*
+→ **Checkpoint:** _Promote any of these?_
 
 ### Step 7 — Comment & pattern hygiene
 
@@ -186,10 +187,10 @@ Present as a numbered list. The reviewer marks each yes/no — real issue or not
 Assemble from **the flag list only** — not from the agents' raw findings, not from Steps 6/7 unless the reviewer confirmed them.
 
 - Each flag becomes an **inline PR comment**, anchored to its relevant line/file.
-- Phrase each as a question **to the author**, not a verdict — *"What happens to in-flight jobs when the consumer redeploys mid-batch?"*, not *"this doesn't handle in-flight jobs."*
+- Phrase each as a question **to the author**, not a verdict — _"What happens to in-flight jobs when the consumer redeploys mid-batch?"_, not _"this doesn't handle in-flight jobs."_
 - No persona voice, no flavor text, no severity theater.
 - Batch every inline comment collected across the whole walkthrough into **one GitHub review**, submitted together when the reviewer is done — not posted one at a time as they're generated.
-- No confirmation checkpoint before posting; posting *is* the last step.
+- No confirmation checkpoint before posting; posting _is_ the last step.
 - If the reviewer intends to post it via the model rather than doing it themselves, the user's global posting-on-behalf-of rule applies: prefix `Response by The Claudefather:` and get explicit confirmation before posting anything.
 
 If the flag list is empty, say so plainly and offer the alternative: assemble a review from the strongest unflagged items instead, clearly marked as the model's suggestions.
