@@ -75,11 +75,13 @@ Send all subagents in a single message so they run concurrently. **Do not dispat
 
 Each prompt is the agent file's content plus: PR title/body, the role-classified file list with new/extended/reshaped tags, the base ref, and the head SHA. Use `subagent_type="Explore"` — all are read-only.
 
-While they run, draft the Step 1 and Step 2 content from Phase 0 output.
+While they run, draft the Step 0, Step 1, and Step 2 content from Phase 0 output — but do not present any of it yet. **Wait for all subagents to complete before starting the walkthrough.** Presenting Step 0 or Step 1 while the agents are still running interleaves the walkthrough with the dispatch; the reviewer's first step should arrive on a clean turn once the reports are back.
 
 ---
 
 ## The walkthrough
+
+**The walkthrough begins only after Phase 1's subagents have all returned.** Step 0 and Step 1 are the reviewer's entry point — hold them until every report is in, so the orient/explore content starts cleanly and doesn't get mixed up with agent dispatch.
 
 Present **one step at a time**. Stop after each and wait. Never pre-emptively dump the next step, and never collapse two steps into one message because they seem short.
 
