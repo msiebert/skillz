@@ -1,0 +1,11 @@
+{
+  "name": "msiebert-skills",
+  "owner": { "name": "Mark Siebert" },
+  "plugins": [
+    {
+      "name": "guided-review",
+      "source": "./plugins/guided-review",
+      "description": "Systems-design-level guided PR review"
+    }
+  ]
+}

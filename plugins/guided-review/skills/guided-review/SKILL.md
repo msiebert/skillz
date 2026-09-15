@@ -5,7 +5,9 @@ description: Walk the reviewer through a PR at the systems-design level, one ste
 
 # Guided Review
 
-A stepwise walkthrough that gets the reviewer holding the _system_ in their head instead of drowning in the diff. Line-level correctness is already covered by other tooling (`self-review`, `mixpanel-review`, bots) — this skill deliberately does not hunt bugs. It compresses, routes, and surfaces design decisions, then captures the reviewer's judgment.
+A stepwise walkthrough that gets the reviewer holding the _system_ in their head instead of drowning in the diff. Line-level correctness is out of scope here — pair this with whatever review tooling and bots you already use; this skill deliberately does not hunt bugs. It compresses, routes, and surfaces design decisions, then captures the reviewer's judgment.
+
+**Prerequisites:** this skill assumes the GitHub `gh` CLI is installed and authenticated, and that the PR lives on GitHub (Step 8 posts inline review comments via `gh`).
 
 **The output is the reviewer's opinion, not the model's.** Steps end with a checkpoint; the reviewer's reactions accumulate into a flag list, and the final step posts that flag list as inline comments on the PR. The model's own opinions are quarantined in the smells and hygiene steps and only promoted if the reviewer says so.
 
@@ -28,7 +30,7 @@ gh pr diff --stat
 git log --oneline <base>...HEAD
 ```
 
-If no PR exists, fall back to `git diff --stat <base>...HEAD` (default base `master`) and tell the user you're walking the branch diff, not a PR.
+If no PR exists, fall back to `git diff --stat <base>...HEAD` and tell the user you're walking the branch diff, not a PR. Detect `<base>` from the repo's default branch (`git symbolic-ref refs/remotes/origin/HEAD`, or `gh repo view --json defaultBranchRef`); if detection fails, try `main` then `master`.
 
 From paths and line counts alone — **no file contents yet** — bucket every changed file into an architectural role:
 
