@@ -1,0 +1,6 @@
+{
+  "name": "guided-review",
+  "version": "0.1.0",
+  "description": "Systems-design-level guided PR review, one step at a time.",
+  "author": { "name": "Mark Siebert" }
+}
