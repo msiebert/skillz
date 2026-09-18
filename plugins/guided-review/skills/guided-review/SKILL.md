@@ -89,6 +89,8 @@ Present **one step at a time**. Stop after each and wait. Never pre-emptively du
 
 Every step header carries its number and the total, so the reviewer knows where they are: `**Step 3 of 7 — Contracts**`.
 
+**Prefer pseudocode to prose whenever it conveys meaning better.** Engineers grok a few lines of pseudocode faster than a paragraph. Any time you judge that a short pseudocode sketch would land an idea more clearly than sentences — control flow, an algorithm, a condition, a before/after in behavior, or anything else, in any step — use it. Keep it plain-text and terminal-renderable, same constraint as the diagrams. Prose still carries intent, tradeoffs, and anything pseudocode would only bloat.
+
 ### Step 0 — Orient _(no checkpoint; fold into the Step 1 message)_
 
 One or two lines: PR number and title, N components touched, N files (N mechanical/skipped), N contract changes, size verdict.
@@ -146,6 +148,8 @@ From the core-logic agent. Only surface a card when there's **genuine live tensi
 - Cost: <what this choice makes harder later>
 - Question: <what to ask the author>
 ```
+
+The `Chose` and `Alternative` lines are prime pseudocode candidates — a two-line sketch of each path usually beats describing it in words.
 
 **Zero or one card is a fine, expected outcome.** Do not pad to reach three. If the agent's candidates are all descriptions dressed as decisions, or alternatives no one would seriously consider, drop them.
 

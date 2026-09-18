@@ -53,8 +53,8 @@ Return 3–6 decision cards, ordered most-consequential first. If you can only f
 ## DECISIONS
 - name: <3–6 word label>
   where: <path:line-range — the primary site>
-  chose: <what the PR does, one sentence>
-  alternative: <the concrete other option, one sentence>
+  chose: <what the PR does — one sentence, or a short pseudocode sketch when that conveys the logic more clearly than prose>
+  alternative: <the concrete other option — one sentence, or a short pseudocode sketch>
   cost: <what this makes harder later, one sentence>
   question: <one question to the author>
   confidence: <high | medium> — <only if medium: what you'd need to confirm it>
