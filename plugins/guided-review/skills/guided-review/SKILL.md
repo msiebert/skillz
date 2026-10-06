@@ -194,6 +194,23 @@ Assemble from **the flag list only** — not from the agents' raw findings, not 
 
 - Each flag becomes an **inline PR comment**, anchored to its relevant line/file.
 - Phrase each as a question **to the author**, not a verdict — _"What happens to in-flight jobs when the consumer redeploys mid-batch?"_, not _"this doesn't handle in-flight jobs."_
+- Write each comment so a reader unfamiliar with the code can follow it on its own, in this order, as concisely as possible:
+  1. **Context** — one sentence on what this code does or which invariant/config/caller matters here.
+  2. **The concern and why it's real** — the concrete input or state that leads to the wrong behavior, backed by the specific evidence (function names, `file:line`, values, related code elsewhere). Pseudocode beats prose when it's clearer.
+  3. **The question** (and a suggested fix, if there is one).
+
+  Include only the details the reader needs to understand the issue; no filler, and don't restate the diff. Example:
+
+  ```
+  `flush()` drains `pending` and then clears `self.lock`. `on_shutdown()` (worker.py:88) calls
+  it from a signal handler while a batch may still be mid-`send()`:
+
+    send(batch[0..k]) -> SIGTERM -> flush() clears pending -> batch[k+1..n] is dropped
+
+  What guarantees `send()` has finished before `flush()` runs? If nothing does, should
+  `flush()` wait on the lock?
+  ```
+
 - No persona voice, no flavor text, no severity theater.
 - Batch every inline comment collected across the whole walkthrough into **one GitHub review**, submitted together when the reviewer is done — not posted one at a time as they're generated.
 - No confirmation checkpoint before posting; posting _is_ the last step.
@@ -213,6 +230,7 @@ Maintain across the whole walkthrough. One entry per flag:
   location: <file:line, for inline anchoring>
   reviewer said: <their actual words, paraphrased minimally>
   seed question: <draft question to the author>
+  context & evidence: <one line of background, plus the concrete input/state and specific details (names, file:line, values) that make it a real concern>
 ```
 
 Keep the reviewer's own framing wherever possible — their phrasing carries system context the model doesn't have.
