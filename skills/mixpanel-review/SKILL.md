@@ -58,8 +58,9 @@ Posting rules:
 
 - **One PR review, many inline comments.** Use a single `POST /repos/{owner}/{repo}/pulls/{n}/reviews` call with `event: COMMENT` and an array of `comments[]` entries, one per finding that has a known file+line. This groups them as a single review instead of N drive-by comments.
 - **Findings without a line** (line: "—") go in the review `body` as a bulleted "General notes" section, not as inline comments (the reviews API rejects inline comments without a line).
-- **Review body** starts with the literal line `Response by The Claudefather:` followed by a blank line, then a short summary (counts by severity, e.g. "2 blocking, 3 should-fix, 1 hygiene"), then the General notes section if any. This prefix is required for any message posted on the user's behalf and overrides anything else.
+- **Review body** starts with a short summary (counts by severity, e.g. "2 blocking, 3 should-fix, 1 hygiene"), then the General notes section if any.
 - **Inline comment body** for each finding:
+
   ```
   **[severity]** _(pattern: <pattern-name>)_
 
@@ -67,7 +68,9 @@ Posting rules:
 
   **Suggestion:** <suggestion>
   ```
+
   No persona voice, no flavor text, no emojis in posted content. Plain professional review prose only.
+
 - **Commit SHA.** The reviews API needs `commit_id` set to the PR head SHA. Get it from `gh pr view <n> --json headRefOid -q .headRefOid`.
 - **How to call gh.** The nested `comments[]` array is awkward with `-f` flags; build a JSON payload and pipe it: `gh api -X POST repos/{owner}/{repo}/pulls/{n}/reviews --input -`. Read the owner/repo from `gh pr view <n> --json url` or assume `mixpanel/analytics` if the orchestrator already used it for the diff.
 - **Dry-run first.** Before calling the API, print the JSON payload you're about to send so the user can spot-check it. Only post after they say go.

@@ -195,6 +195,7 @@ Assemble from **the flag list only** — not from the agents' raw findings, not 
 - Each flag becomes an **inline PR comment**, anchored to its relevant line/file.
 - Phrase each as a question **to the author**, not a verdict — _"What happens to in-flight jobs when the consumer redeploys mid-batch?"_, not _"this doesn't handle in-flight jobs."_
 - Write each comment so a reader unfamiliar with the code can follow it on its own, in this order, as concisely as possible:
+
   1. **Context** — one sentence on what this code does or which invariant/config/caller matters here.
   2. **The concern and why it's real** — the concrete input or state that leads to the wrong behavior, backed by the specific evidence (function names, `file:line`, values, related code elsewhere). Pseudocode beats prose when it's clearer.
   3. **The question** (and a suggested fix, if there is one).
@@ -214,7 +215,7 @@ Assemble from **the flag list only** — not from the agents' raw findings, not 
 - No persona voice, no flavor text, no severity theater.
 - Batch every inline comment collected across the whole walkthrough into **one GitHub review**, submitted together when the reviewer is done — not posted one at a time as they're generated.
 - No confirmation checkpoint before posting; posting _is_ the last step.
-- If the reviewer intends to post it via the model rather than doing it themselves, the user's global posting-on-behalf-of rule applies: prefix `Response by The Claudefather:` and get explicit confirmation before posting anything.
+- If the reviewer intends to post it via the model rather than doing it themselves, get explicit confirmation before posting anything.
 
 If the flag list is empty, say so plainly and offer the alternative: assemble a review from the strongest unflagged items instead, clearly marked as the model's suggestions.
 

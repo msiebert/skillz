@@ -51,8 +51,9 @@ When drafting/posting:
 
 - Use a single `POST /repos/{owner}/{repo}/pulls/{n}/reviews` call with `event: COMMENT` and a `comments[]` array (one per finding with a known file+line), not N separate drive-by comments.
 - Findings without a resolvable line go in the review `body` as a "General notes" section.
-- The review `body` must start with the literal line `Response by The Claudefather:` followed by a blank line, then a short summary (e.g. "1 blocking, 2 should-fix, 1 worth-asking"), per the user's global posting-on-behalf-of instructions. No persona voice or flavor text in the posted content itself — plain professional review prose.
+- The review `body` starts with a short summary (e.g. "1 blocking, 2 should-fix, 1 worth-asking"). No persona voice or flavor text in the posted content itself — plain professional review prose.
 - Inline comment body per finding:
+
   ```
   **[severity]** _(lens: <test-coverage | description-consistency | risk-hotspot>)_
 
@@ -60,6 +61,7 @@ When drafting/posting:
 
   **Suggestion:** <suggestion>
   ```
+
 - Get `commit_id` from `gh pr view <n> --json headRefOid -q .headRefOid`.
 - Build the JSON payload and print it for the user to spot-check BEFORE calling the API (dry run first). Only call after explicit go-ahead.
 - If the API call fails (stale SHA, line not in diff), report the failure and the specific finding back to the user rather than silently dropping it.
