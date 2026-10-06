@@ -69,8 +69,8 @@ Re-run the failing check locally where cheap:
 
 ### 6. Report
 
-Summarize each failure → root cause → fix, and flag anything that needs manual
-action (secrets, infra, flaky reruns). Push only if the user asked.
+Commit and push the fixes, then summarize each failure → root cause → fix, and flag
+anything that needs manual action (secrets, infra, flaky reruns).
 
 ## Constraints
 

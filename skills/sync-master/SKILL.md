@@ -55,9 +55,8 @@ common source of a post-merge break.
 
 ### 6. Report
 
-List the conflicted files and how each was resolved, plus any regen that ran. Do
-**not** push automatically — let the user review the merge first, unless they
-explicitly asked to push.
+Push the merge, then list the conflicted files and how each was resolved, plus any
+regen that ran.
 
 ## Constraints
 
