@@ -51,7 +51,7 @@ Return exactly these four sections. Use `NONE` for any section with nothing in i
 
 ```
 ## CONTRACTS
-- artifact: <path>
+- artifact: <path:line of the changed definition>
   change: <what changed, one line>
   compatibility: <backward-compatible | breaking | breaking-but-versioned>
   consumers: <who consumes it, with file:line where findable, or "external/unknown">
