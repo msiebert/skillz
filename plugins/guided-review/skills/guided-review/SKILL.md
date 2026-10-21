@@ -180,18 +180,20 @@ Each "yes" becomes a flag, using the item's behavior and reason as the seed. "No
 
 Two or three items maximum. Design-level only: a misplaced responsibility, an abstraction that will leak, a pattern deviation without visible justification. No line-level bugs, no style, no naming nits. If nothing rises to that bar, say "nothing at the design level" and move on.
 
+State each smell as **trigger → outcome**: the plausible input, state, or future edit that sets it off, and what goes observably wrong after it (wrong result, error, extra call). A smell that only describes structure ("X subclasses Y") isn't ready to show; work out what it breaks first, so a promoted smell is already a concrete flag.
+
 → **Checkpoint:** _Promote any of these?_
 
 ### Step 7 — Post review
 
-Assemble from **the flag list only** — not from the agents' raw findings, not from Steps 5/6 unless the reviewer confirmed them.
+Post the approved `draft comment` of each flag in **the flag list only** — not the agents' raw findings, not Steps 5/6 items the reviewer didn't confirm. Drafts are written and approved when the flag is recorded; this step only posts them.
 
-- Each flag becomes an **inline PR comment**, anchored to its relevant line/file.
-- Phrase each as a question **to the author**, not a verdict — _"What happens to in-flight jobs when the consumer redeploys mid-batch?"_, not _"this doesn't handle in-flight jobs."_
-- Write each comment so a reader unfamiliar with the code can follow it on its own, in this order, as concisely as possible:
+- Each flag is posted as an **inline PR comment**, anchored to its `location`.
+- Drafts are phrased as a question **to the author**, not a verdict — _"What happens to in-flight jobs when the consumer redeploys mid-batch?"_, not _"this doesn't handle in-flight jobs."_
+- Drafts are written so a reader unfamiliar with the code can follow them on their own, in this order, as concisely as possible:
 
   1. **Context** — one sentence on what this code does or which invariant/config/caller matters here.
-  2. **The concern and why it's real** — the concrete input or state that leads to the wrong behavior, backed by the specific evidence (function names, `file:line`, values, related code elsewhere). Pseudocode beats prose when it's clearer.
+  2. **The concern and why it's real** — the concrete input or state that leads to the wrong behavior, backed by the specific evidence (function names, `file:line`, values, related code elsewhere). Pseudocode beats prose when it's clearer. Name a concrete **trigger** (an input, a state, or a plausible future edit) and the **observable outcome** (wrong result, error message, extra call). For "fine today but fragile" concerns, show the actual code involved, the specific edit that breaks it, what happens after that edit, and why existing tooling (types, tests) won't catch it. A sketch that only restates the structure is not enough.
   3. **The question** (and a suggested fix, if there is one).
 
   Include only the details the reader needs to understand the issue; no filler, and don't restate the diff. Example:
@@ -208,10 +210,10 @@ Assemble from **the flag list only** — not from the agents' raw findings, not 
 
 - No persona voice, no flavor text, no severity theater.
 - Batch every inline comment collected across the whole walkthrough into **one GitHub review**, submitted together when the reviewer is done — not posted one at a time as they're generated.
-- No confirmation checkpoint before posting; posting _is_ the last step.
+- No wording checkpoint before posting; the reviewer already approved each draft, and posting _is_ the last step.
 - If the reviewer intends to post it via the model rather than doing it themselves, get explicit confirmation before posting anything.
 
-If the flag list is empty, say so plainly and offer the alternative: assemble a review from the strongest unflagged items instead.
+If the flag list is empty, say so plainly and offer the alternative: drafting a review from the strongest unflagged items instead.
 
 ---
 
@@ -220,15 +222,20 @@ If the flag list is empty, say so plainly and offer the alternative: assemble a 
 Maintain across the whole walkthrough. One entry per flag:
 
 ```
-- source: <step-3-decision | step-4-contract | step-5-tests | step-6-promoted>
+- source: <step-1-explore | step-3-decision | step-4-contract | step-5-tests | step-6-promoted>
   subject: <the decision / contract / missing test / smell>
   location: <file:line, for inline anchoring>
   reviewer said: <their actual words, paraphrased minimally>
-  seed question: <draft question to the author>
-  context & evidence: <one line of background, plus the concrete input/state and specific details (names, file:line, values) that make it a real concern>
+  draft comment: <full comment text in the Step 7 format, as approved by the reviewer>
 ```
 
 Keep the reviewer's own framing wherever possible — their phrasing carries system context the model doesn't have.
+
+One concern per flag. Build the flag around the specific point the reviewer reacted to. Leave out related concerns they didn't raise; if one seems worth its own flag, offer it separately.
+
+Pre-answer before recording. Before a flag goes on the list, write the author's most likely answer in one or two lines and show it next to the draft. If that answer would settle the concern, say so and let the reviewer decide whether to keep it.
+
+Show the draft when the flag is recorded. When a flag goes on the list, show the reviewer the full comment text, written in the Step 7 format, not a summary. The reviewer approves the wording at the point it's created, so Step 7 is only posting.
 
 ## Navigation
 
@@ -237,7 +244,7 @@ Accept at any checkpoint:
 - `next` — advance.
 - `back` — previous step, re-presented.
 - `jump <n>` / a section name (`map`, `decisions`, `contracts`, `tests`, `smells`) — go there directly.
-- `done` — jump straight to Step 7 and post from whatever's flagged so far.
+- `done` — jump straight to Step 7 and post from whatever's flagged so far. First draft and show any flags that don't yet have an approved comment, then post.
 
 Everything is precomputed after Phase 1, so all navigation is free — never re-dispatch an agent to answer a jump. `done` must work after any step, including Step 1; bailing early with two good questions is a success case.
 
